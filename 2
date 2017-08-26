@@ -34,17 +34,18 @@ const generateToken = (req, res, callback) => {
 const testGetUser = (req, res) => {
 
 	var headers = {
-		"Authorization": "Basic MWExZDI5YmMtMTVmMS00ZDRjLWJmZWQtZmM4MDUxMTIzNjlmOjA4ZDBlM2EzLWY2MDEtNDBlNy1hYzZiLTkyYzVjMjAzMzM4ZA==",
+		"Authorization": "Basic MDBhMmNlY2YtNTdhOS00OTVkLWIzMzctMDUzNzk0ODFjZWEyOjkwZjg2NmYwLTBiYjEtNDE5Zi1iZmNjLWFiZDNjZTY1ZDBlMQ==",
 		"Content-Type": "application/x-www-form-urlencoded"
 	}
 	var datas = {
 		"grant_type":"client_credentials"
 	}
 	axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded'
-		axios.defaults.headers.common['Authorization'] = 'Basic MWExZDI5YmMtMTVmMS00ZDRjLWJmZWQtZmM4MDUxMTIzNjlmOjA4ZDBlM2EzLWY2MDEtNDBlNy1hYzZiLTkyYzVjMjAzMzM4ZA=='
+		axios.defaults.headers.common['Authorization'] = 'Basic MDBhMmNlY2YtNTdhOS00OTVkLWIzMzctMDUzNzk0ODFjZWEyOjkwZjg2NmYwLTBiYjEtNDE5Zi1iZmNjLWFiZDNjZTY1ZDBlMQ=='
 		axios.post('https://api.finhacks.id/api/oauth/token', qs.stringify(datas), headers)
 		.then((result) => {
 				var token = result.data.access_token
+
 				var a = req.method
 				var b = `/banking/v4/corporates/finhacks05/accounts/8220000223`
 				var c = '1a1d29bc-15f1-4d4c-bfed-fc805112369f'
@@ -52,28 +53,23 @@ const testGetUser = (req, res) => {
 				var e = 'd7fa151e-adb4-45d0-b1e9-4bd0910d7382'
 				var f = 'c90290a9-423f-43ec-ad40-e61a784bbeaa'
 				var g = token
-				//var g = "gp9HjjEj813Y9JGoqwOeOPWbnt4CUpvIJbU1mMU4a11MNDZ7Sg5u9a"
 				var i = ''
 				var h  = moment.tz(new Date(), TIMEZONE).format(DATE_FORMAT)
-				//var h = "2017-03-17T09:44:18.000+07:00"
 				// var h = `${new Date().toISOString().replace('Z','+07:00')}`
 				console.log(h)
 				var j = a.toUpperCase()
 				var k = encodeURI(b)
 				console.log(k)
-				//var l = crypto.createHash('sha256').update(i).digest().toLowerCase()
-				var l =  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"    
-				//var m = h.toString() //moment.tz(new Date(), TIMEZONE).format(DATE_FORMAT)
-				//var m = '2017-03-17T09:44:18.000+07:00'
+				var l = crypto.createHash('sha256').update(i).digest().toLowerCase()
+				//var l =  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"    
+				var m = h.toString() //moment.tz(new Date(), TIMEZONE).format(DATE_FORMAT)
+				console.log(m)
 				// var n = j+':'+k+':'+g+':'+l+':'+m
-				var m = h
 				//console.log(n)
 				// var o = crypto.HmacSHA256(f, n).toString()
 
-				var o = crypto.createHmac('sha256', f).update('GET:' + k + ':' + g + ':' + l + ':' + h).digest('hex')
-				console.log('GET:' + k + ':' + g + ':' + l + ':' + h);
-				//var o = crypto.createHmac('sha256', f).update('GET:' + k + ':' + g + ':' + l + ':' + h)
-				console.log('OUTPUT:  ', o,l)
+				//var o = crypto.createHmac('sha256', f).update('GET:' + k + ':' + g + ':' + l + ':' + h).digest('hex')
+				var o = crypto.createHmac('sha256', f).update('GET:' + k + ':' + g + ':' + l + ':' + h)
 
 				var requestOptions = {
 url: `https://api.finhacks.id${b}`,
@@ -84,9 +80,9 @@ url: `https://api.finhacks.id${b}`,
 	     'X-BCA-TIMESTAMP': m,
 	     'Authorization': 'Bearer ' + g,
 	     'X-BCA-SIGNATURE': o
-     }
+     },
+body: JSON.stringify({})
 				};
-console.log('REQUEST OPTIONS', requestOptions)
 
 		request(requestOptions, function (err, response, body) {
 				console.log(err)
