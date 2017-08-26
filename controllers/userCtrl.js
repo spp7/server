@@ -1,5 +1,7 @@
 require('mongoose')
 require('dotenv').config()
+const SHA256 = require("crypto-js/sha256")
+const HmacSHA1 = require('crypto-js/HmacSHA1')
 
 const axios = require('axios')
 
@@ -7,8 +9,25 @@ const User = require('../models/user')
 const userdata = require('../config/user')
 
 const testGetUser = (req, res) => {
-  console.log(`${process.env.API_URL}/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`)
-  axios.get(`${process.env.API_URL}/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`)
+  let apisecret = process.env.Business_API_Secret
+  let k = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
+  let j = req.method
+  let l = req.body.replace(/\s/g, '') || ''
+  l = SHA256(l).toLowerCase()
+  let g = process.env.Business_OAuth_Credential
+  let h = new Date().toISOString()
+  let stringtosign = `${j}:${k}:${g}:${l}:${h}`
+  console.log(stringtosign)
+  stringtosign = HmacSHA1(stringtosign)
+  console.log(stringtosign)
+  axios.get(`${process.env.API_URL}${uri}`, {
+    'Authorization': `Bearer ${g}`,
+    'Content-Type': 'application/json',
+    'Origin': '182.16.165.75:3001',
+    'X-BCA-Key	': process.env.Business_API_Key,
+    'X-BCA-Timestamp': `${h}`,
+    'X-BCA-Signature': stringtosign,
+  })
   .then((result) => {res.send(result)})
   .catch(err => {res.send(err)})
 }
