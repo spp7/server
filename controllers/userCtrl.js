@@ -13,24 +13,27 @@ const testGetUser = (req, res) => {
   let k = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
   let j = req.method
   let l = ""
-  // let l = req.body.replace(/\s/g, '') || ''
+  // let l = req.body.replace(/\s/g, "") || ""
   l = `${SHA256(l)}`.toLowerCase()
   l = l
   let g = process.env.Business_OAuth_Credential
   let h = new Date().toISOString()
   let stringtosign = `${j}:${k}:${g}:${l}:${h}`
   stringtosign = `${crypto.HmacSHA1(apisecret,stringtosign)}`
-  axios.get(`${process.env.API_URL}${k}`, {
-    'Authorization': `Bearer ${g}`,
-    'Content-Type': 'application/json',
-    'Origin': '182.16.165.75:3001',
-    'X-BCA-Key	': process.env.Business_API_Key,
-    'X-BCA-Timestamp': `${h}`,
-    'X-BCA-Signature': stringtosign,
-  })
-  .then((result) => {console.log('ga error');res.send(result)})
-  .catch(err => {res.send(err)})
+  let header = {
+    "Authorization": `Bearer ${g}`,
+    "Content-Type": "application/json",
+    "Origin": "182.16.165.75:3001",
+    "X-BCA-Key	": process.env.Business_API_Key,
+    "X-BCA-Timestamp": `${h}`,
+    "X-BCA-Signature": stringtosign,
+  }
+  console.log(header)
+  axios.get(`${process.env.API_URL}${k}`, header)
+  .then((result) => {console.log("ga error");res.send(result)})
+  .catch(err => {console.log("masuk error"); res.send(err)})
 }
+
 
 
 const createUser = (req, res) => {
