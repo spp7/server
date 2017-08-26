@@ -87,13 +87,14 @@ const testGetUser = (req, res) => {
       "Authorization": `Bearer ${g}`,
       "Content-Type": "application/json",
       "Origin": "182.16.165.75:3001",
-      "X-BCA-Key": process.env.Business_API_Key,
+      "X-BCA-Key": e,
       "X-BCA-Timestamp": `${h}`,
-      "X-BCA-Signature": stringtosign,
+      "X-BCA-Signature": o,
     }
+    let data = {}
 
     // console.log(header)
-    axios.post(b, qs.stringify({}) )
+    axios.post(b, qs.stringify(data) )
     .then((signature) => {console.log("ga error 2");res.send(signature.data)})
     .catch(err => {console.log("masuk error 2"); res.send(err)})
 
