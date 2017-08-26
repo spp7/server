@@ -71,7 +71,7 @@ const testGetUser = (req, res) => {
 
     // console.log(header)
     axios.get(`${process.env.API_URL}${k}`)
-    .then((result) => {console.log("ga error");res.send(result)})
+    .then((signature) => {console.log("ga error");res.send(signature.data)})
     .catch(err => {console.log("masuk error"); res.send(err)})
 
   })
