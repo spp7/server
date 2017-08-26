@@ -6,7 +6,7 @@ let TransferSchema = new Schema({
   line: String,
   year: Number,
   month: Number,
-  save: [{
+  saving: [{
     createdDate: { type: Date, default: Date.now() },
     amount: Number
     }],
@@ -23,7 +23,7 @@ let TransferSchema = new Schema({
     amount: Number
     }],
   total: {
-    save: Number,
+    saving: Number,
     give: Number,
     grow: Number,
     spend: Number

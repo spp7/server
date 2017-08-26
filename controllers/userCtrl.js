@@ -12,125 +12,159 @@ const TIMEZONE = 'Asia/Jakarta'
 const User = require('../models/user')
 const userdata = require('../config/user')
 
-//const generateToken = (req, res, callback) => {
-//	var headers = {
-//		"Authorization": "Basic MWExZDI5YmMtMTVmMS00ZDRjLWJmZWQtZmM4MDUxMTIzNjlmOjA4ZDBlM2EzLWY2MDEtNDBlNy1hYzZiLTkyYzVjMjAzMzM4ZA==",
-//		"Content-Type": "application/x-www-form-urlencoded"
-//	}
-//	var datas = {
-//		"grant_type":"client_credentials"
-//	}
-//	axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded'
-//		axios.defaults.headers.common['Authorization'] = 'Basic MDBhMmNlY2YtNTdhOS00OTVkLWIzMzctMDUzNzk0ODFjZWEyOjkwZjg2NmYwLTBiYjEtNDE5Zi1iZmNjLWFiZDNjZTY1ZDBlMQ=='
-//		axios.post('https://api.finhacks.id/api/oauth/token', qs.stringify(datas), headers)
-//		.then((res) => {
-//				callback(req,res,res.data.access_token)
-//				})
-//	.catch(err => {res.send(err)})
-//}
+const generateToken = (type, callback) => {
+  let auth
+  if (type == 'business') auth = process.env.Business_OAuth_Credential
+  else if (type == 'ewallet') auth = process.env.Wallet_OAuth_Credential
 
-const testGetUser = (req, res) => {
   let headers = {
-    "Authorization": `Basic ${process.env.Business_OAuth_Credential}`,
+    "Authorization": `Basic ${auth}`,
     "Content-Type": "application/x-www-form-urlencoded"
   }
   let datas = {
     "grant_type":"client_credentials"
   }
   axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded'
-  axios.defaults.headers.common['Authorization'] = `Basic ${process.env.Business_OAuth_Credential}`
+  axios.defaults.headers.common['Authorization'] = `Basic ${auth}`
   axios.post('https://api.finhacks.id/api/oauth/token', qs.stringify(datas), headers)
-    .then((result) => {
-      let token = result.data.access_token
+  .then((result) => {
+    let token = result.data.access_token
+    callback(token)
+  })
+  .catch(err => {
+    console.log('error di token')
+    console.log(err)
+  })
+}
 
-      let a = req.method
-      let b = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
-      let c = process.env.Business_Client_ID
-      let d = process.env.Business_Client_Secret
-      let e = process.env.Business_API_Key
-      let f = process.env.Business_API_Secret
-      let g = token
-      let i = ''
-      let h  = moment.tz(new Date(), TIMEZONE).format(DATE_FORMAT)
-      let j = a.toUpperCase()
-      let k = encodeURI(b)
-      let l = crypto.createHash('sha256').update(i).digest('hex').toLowerCase()
-      //let l =  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-      let m = h
-      let o = crypto.createHmac('sha256', f).update('GET:' + k + ':' + g + ':' + l + ':' + h).digest('hex')
+const generateSignature = (method, type ,callback) => {
 
-      let requestOptions = {
-        url: `https://api.finhacks.id${b}`,
-        method: 'GET',
-        headers: {
-          'X-BCA-KEY': e,
-          'Content-Type': 'application/json',
-          'X-BCA-TIMESTAMP': m,
-          'Authorization': 'Bearer ' + g,
-          'X-BCA-SIGNATURE': o
+  generateToken(type, function(token) {
+    let a = method
+    let b,c,d,e,f
+    let i = ''
+    let body = {CustomerName:'John Doe',DateOfBirth:'2000-05-20',PrimaryID:'081234567890',MobileNumber:'085813372797',EmailAddress:'user@bca.co.id',CompanyCode:process.env.Wallet_Company_Code,CustomerNumber:'1111111112',IDNumber:'1234567890123456'}
+
+    if (type == 'business') {
+      b = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
+      c = process.env.Business_Client_ID
+      d = process.env.Business_Client_Secret
+      e = process.env.Business_API_Key
+      f = process.env.Business_API_Secret
+    } else if (type === 'ewallet') {
+      b = method === 'GET' ? `/ewallet/customers/${process.env.Wallet_Company_Code}/081234567890` : '/ewallet/customers'
+      c = process.env.Wallet_ClientID
+      d = process.env.Wallet_Client_Secret
+      e = process.env.Wallet_API_Key
+      f = process.env.Wallet_API_Secret
+      if (method == 'POST') {
+        // i = {CustomerName:'JohnDoe',DateOfBirth:'2000-05-20',PrimaryID:'081234567890',MobileNumber:'085813372797',EmailAddress:'user@bca.co.id',CompanyCode:process.env.Wallet_Company_Code,CustomerNumber:'1111111112',IDNumber:'1234567890123456'}
+        i = JSON.stringify(body).replace(/\s/g, '')
+      }
+    }
+
+    let g = token
+    let h  = moment.tz(new Date(), TIMEZONE).format(DATE_FORMAT)
+    let j = a.toUpperCase()
+    let k = encodeURI(b)
+    let l = crypto.createHash('sha256').update(i).digest('hex').toLowerCase()
+    let m = h
+    let o = crypto.createHmac('sha256', f).update(a+':' + k + ':' + g + ':' + l + ':' + h).digest('hex')
+
+    let requestOptions = {
+      url: `https://api.finhacks.id${b}`,
+      method: a,
+      headers: {
+        'X-BCA-KEY': e,
+        'Content-Type': 'application/json',
+        'X-BCA-TIMESTAMP': m,
+        'Authorization': 'Bearer ' + g,
+        'X-BCA-SIGNATURE': o
+      }
+    };
+
+    if (type === 'ewallet' && method === 'POST') {
+      requestOptions.body = JSON.stringify(body)
+      // console.log(requestOptions)
+    }
+
+    request(requestOptions, function (err, response, body) {
+      if (body !== null){
+        if (type === 'business') {
+          let userData = JSON.parse(body).AccountDetailDataSuccess
+          console.log('business')
+          console.log(userData)
+          callback('GET',userData)
         }
-      };
+        else if (type === 'ewallet') {
+          console.log('method', method)
+          console.log('ada body')
+          console.log(JSON.parse(body) )
+          console.log('------------------')
+	        callback(JSON.parse(body))
+        }
+      }
+      else console.log(err)
 
-      request(requestOptions, function (err, response, body) {
-        console.log(err)
-        console.log('----------------------------------x')
-        console.log(response)
-        console.log('----------------------------------x')
-        console.log(body)
-        console.log('----------------------------------x')
-      })
     })
-    .catch(err => {
-      res.send(err)
+  })
+}
+
+const testGetUser = (req, res) => {
+  generateBusiness(req.method)
+}
+
+const generateBusiness = (method) => {
+  generateSignature(method,'business', createWallet)
+}
+
+const createWallet = (userData) => {
+  generateSignature('POST','ewallet', function(data) {
+    // let companyCode = data.CompanyCode
+    // let primaryID = data.PrimaryID
+    generateWallet('GET',userData,data)
+  })
+}
+const generateWallet = (method, userData, walletData) => {
+  let accountNumber = userData[0].AccountNumber
+  let availableBalance = userData[0].AvailableBalance
+
+  generateSignature(method,'ewallet', function(data) {
+    let user = {
+      otp : {},
+      'businessBanking': {
+        'CorporateID': process.env.Business_Corporate_ID,
+        'AccountNumber': process.env.Business_Account_No_1
+      },
+      'ewallet': {
+        'CustomerName': data.CustomerName,
+        'DateOfBirth': data.DateOfBirth,
+        'EmailAddress': data.EmailAddress || 'poppymighty@gmail.com',
+        'CustomerNumber': data.CustomerNumber || '085813372797',
+        'IDNumber': data.IDNumber,
+        'CompanyCode': process.env.Wallet_Company_Code,
+        'PrimaryID': '081234567890'
+
+      },
+      'detail': {
+        'line': '@poppysp',
+        'mobile': data.CustomerNumber || '085813372797',
+        'email': data.EmailAddress || 'poppymighty@gmail.com'
+      },
+      currBalance: data.AvailableBalance || 0,
+      poin: 0
+    }
+
+    let nuser = new User(user)
+    nuser.save((err, nuser) => {
+      console.log(err? err : nuser)
     })
+
+  })
 }
 
 const createUser = (req, res) => {
-  //get balance
-  axios.get(`${process.env.API_URL}/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`)
-    .then((result) => {
-      let accountNumber = result.AccountNumber
-      let AvailableBalance = result.AvailableBalance
-
-      axios.get(`${process.env.API_URL}/ewallet/customers/80173/081234567890`)
-        .then((err,result) => {
-          if (err) res.send({err:err})
-          else {
-            let userData = {
-              'otp': {},
-              'businessBanking': {
-                'CorporateID': process.env.Corporate_ID_1,
-                'AccountNumber': process.env.Business_Account_No_1
-              },
-              'ewallet': {
-                'CustomerName': result.CustomerName,
-                'DateOfBirth': result.DateOfBirth,
-                'EmailAddress': result.EmailAddress || 'poppymighty@gmail.com',
-                'CustomerNumber': result.CustomerNumber || '085813372797',
-                'IDNumber': result.IDNumber
-              },
-              'detail': {
-                'line': '@poppysp',
-                'mobile': result.CustomerNumber || '085813372797',
-                'email': result.EmailAddress || 'poppymighty@gmail.com'
-              },
-              currBalance: result.AvailableBalance || 0,
-              poin: 0
-            }
-            let user = new User(userData)
-
-            user.save((err, nuser) => {
-              res.send(err? { err: err } : nuser)
-            })
-
-          }
-        })
-
-    })
-    .catch(err => {
-      console.log(err)
-    })
-
+  generateBusiness('GET')
 }
 
 const getUserByLine = (req, res) => {
@@ -146,3 +180,4 @@ module.exports = {
   testGetUser,
   getUserByLine
 }
+

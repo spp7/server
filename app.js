@@ -10,6 +10,7 @@ let index = require('./routes/index')
 let promo = require('./routes/promo')
 let game = require('./routes/game')
 let message = require('./routes/message')
+let transfer = require('./routes/transfer')
 
 let env = process.env.NODE_ENV || 'development'
 const port = process.env.PORT || 3001
@@ -26,6 +27,7 @@ app.use('/api/user', user)
 app.use('/api/game', game)
 app.use('/api/promo', promo)
 app.use('/api/message', message)
+app.use('/api/transfer', transfer)
 app.use('/api', index)
 
 mongoose.connect(db_config[env], (err,res) => {
@@ -38,3 +40,4 @@ app.listen(app.get('port'), () => {
 })
 
 module.exports = app
+

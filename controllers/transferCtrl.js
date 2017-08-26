@@ -1,10 +1,11 @@
 require('mongoose')
+var qs = require('qs');
 const Transfer = require('../models/transfer')
 const User = require('../models/user')
 var moment = require('moment-timezone')
 const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 const TIMEZONE = 'Asia/Jakarta'
-
+const axios = require('axios')
 
 const generateToken = (type, callback) => {
   let auth = process.env.Business_OAuth_Credential
@@ -90,15 +91,15 @@ const createTransfer = (req, res) => {
     year: now.getFullYear(),
     month: now.getMonth(),
     line: req.body.line,
-    save: [{amount: req.body.save}],
+    saving: [{amount: req.body.saving}],
     give: [{amount: req.body.give}],
     grow: [{amount: req.body.grow}],
     spend: [{amount: req.body.spend}],
     total: {
-      save: total.save || 0 + parseInt(req.body.save),
-      give: total.give || 0 + parseInt(req.body.give),
-      grow: total.grow || 0 + parseInt(req.body.grow),
-      spend: total.spend || 0 + parseInt(req.body.spend)
+      saving: req.body.saving,
+      give: req.body.give,
+      grow: req.body.grow,
+      spend: req.body.spend
     }
   }
 
@@ -106,8 +107,8 @@ const createTransfer = (req, res) => {
   transfer.save((err, transfer) => {
     if (err) res.send({err:err})
     else {
-      User.findOne({'detail.line': line}, (err,user)=>{
-        user.balance = user.balance || 0 - parseInt(req.body.save) - parseInt(req.body.spend) - parseInt(req.body.grow) - parseInt(req.body.give)
+      User.findOne({'detail.line': req.body.line}, (err,user)=>{
+        user.balance = user.balance || 0 - parseInt(req.body.saving) - parseInt(req.body.spend) - parseInt(req.body.grow) - parseInt(req.body.give)
         if (err) res.send({err: 'Line user not found'})
         else
           generateSignature(
@@ -136,12 +137,12 @@ const updateTransfer = (req, res) => {
   (err, transfer) => {
     if (err) res.send({ err: err })
     else {
-      transfer.save.push({amount: req.body.save})
+      transfer.save.push({amount: req.body.saving})
       transfer.give.push({amount: req.body.give})
       transfer.grow.push({amount: req.body.grow})
       transfer.spend.push({amount: req.body.spend})
       transfer.total = {
-        save: transfer.total.save + parseInt(req.body.save),
+        saving: transfer.total.saving + parseInt(req.body.saving),
         give: transfer.total.give + parseInt(req.body.give),
         grow: transfer.total.grow + parseInt(req.body.grow),
         spend: transfer.total.spend + parseInt(req.body.spend),
