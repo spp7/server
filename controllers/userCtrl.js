@@ -38,7 +38,7 @@ const testGetUser = (req, res) => {
     "grant_type":"client_credentials"
   }
   axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded'
-  axios.defaults.headers.common['Authorization'] = 'Basic MWExZDI5YmMtMTVmMS00ZDRjLWJmZWQtZmM4MDUxMTIzNjlmOjA4ZDBlM2EzLWY2MDEtNDBlNy1hYzZiLTkyYzVjMjAzMzM4ZA=='
+  axios.defaults.headers.common['Authorization'] = `Basic ${process.env.Business_OAuth_Credential}`
   axios.post('https://api.finhacks.id/api/oauth/token', qs.stringify(datas), headers)
     .then((result) => {
       let token = result.data.access_token
