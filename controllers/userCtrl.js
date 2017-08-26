@@ -63,8 +63,8 @@ const testGetUser = (req, res) => {
     axios.defaults.headers.common["X-BCA-Timestamp"] = `${h}`
     axios.defaults.headers.common["X-BCA-Signature"] = o
 
-
-    axios.get('https://api.finhacks.id'+b)
+    let uri = `https://api.finhacks.id${b}`
+    axios.get(uri)
     .then((result) => {console.log("ga error 2");res.send(result)})
     .catch(err => {console.log("masuk error 2"); res.send(err)})
 
