@@ -12,7 +12,8 @@ const testGetUser = (req, res) => {
   let apisecret = process.env.Business_API_Secret
   let k = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
   let j = req.method
-  let l = req.body.replace(/\s/g, '') || ''
+  let l = ''
+  // let l = req.body.replace(/\s/g, '') || ''
   l = SHA256(l).toLowerCase()
   let g = process.env.Business_OAuth_Credential
   let h = new Date().toISOString()
