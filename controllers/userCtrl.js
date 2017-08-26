@@ -38,19 +38,46 @@ const testGetUser = (req, res) => {
   axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded'
   axios.defaults.headers.common['Authorization'] = 'Basic MDBhMmNlY2YtNTdhOS00OTVkLWIzMzctMDUzNzk0ODFjZWEyOjkwZjg2NmYwLTBiYjEtNDE5Zi1iZmNjLWFiZDNjZTY1ZDBlMQ=='
   axios.post('https://api.finhacks.id/api/oauth/token', qs.stringify(datas), headers)
-  .then((res) => {
-    token = res.data.access_token
+  .then((result) => {
+    let token = result.data.access_token
 
-    let apisecret = process.env.Business_API_Secret
-    let k = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
-    let j = req.method
-    let l = ""
-    l = `${SHA256(l)}`.toLowerCase()
-    l = l
-    let g = token
-    let h = new Date().toISOString().replace('Z','+07:00')
-    let stringtosign = `${j}:${k}:${g}:${l}:${h}`
-    stringtosign = `${crypto.HmacSHA1(apisecret,stringtosign)}`
+    let a = req.method
+    let b = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
+    let c = '00a2cecf-57a9-495d-b337-05379481cea2'
+    let d = '90f866f0-0bb1-419f-bfcc-abd3ce65d0e1'
+    let e = '1b6e44be-df70-4013-8a75-3d7abd2a8046'
+    let f = '60766ed9-2480-4f47-ab3f-68a5a719b54d'
+    let j = a.toUpperCase()
+    let k = encodeURI(b)
+    let l = `${SHA256('')}`.toLowerCase()
+    let m = new Date().toISOString().replace('Z','+07:00')
+    let n = j+':'+k+':'+g+':'+l+':'+m
+    let o = `${crypto.HmacSHA1(f, n)}`
+
+    axios.defaults.headers.common["Authorization"] = `Bearer ${g}`
+    axios.defaults.headers.common["Content-Type"] = "application/json"
+    axios.defaults.headers.common["Origin"] = "182.16.165.75:3001"
+    axios.defaults.headers.common["X-BCA-Key"] = process.env.Business_API_Key
+    axios.defaults.headers.common["X-BCA-Timestamp"] = `${h}`
+    axios.defaults.headers.common["X-BCA-Signature"] = stringtosign
+
+    axios.post(b, qs.)
+    .then(result2 => {res.send(result2.data)})
+    .catch(err => {res.send(err)})
+
+
+
+    // console.log(token)
+    // let apisecret = process.env.Business_API_Secret
+    // let k = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
+    // let j = req.method
+    // let l = ""
+    // l = `${SHA256(l)}`.toLowerCase()
+    // l = l
+    // let g = token
+    // let h = new Date().toISOString().replace('Z','+07:00')
+    // let stringtosign = `${j}:${k}:${g}:${l}:${h}`
+    // stringtosign = `${crypto.HmacSHA1(apisecret,stringtosign)}`
 
     // "Origin": "182.16.165.75:3001",
     // "Content-Type": "application/json",
@@ -64,15 +91,16 @@ const testGetUser = (req, res) => {
     axios.defaults.headers.common = {
       "Authorization": `Bearer ${g}`,
       "Content-Type": "application/json",
+      "Origin": "182.16.165.75:3001",
       "X-BCA-Key": process.env.Business_API_Key,
       "X-BCA-Timestamp": `${h}`,
       "X-BCA-Signature": stringtosign,
     }
 
     // console.log(header)
-    axios.get(`${process.env.API_URL}${k}`)
-    .then((signature) => {console.log("ga error");res.send(signature.data)})
-    .catch(err => {console.log("masuk error"); res.send(err)})
+    axios.get(`${process.env.API_URL}${k}`, qs.stringify({}) )
+    .then((signature) => {console.log("ga error 2");res.send(signature.data)})
+    .catch(err => {console.log("masuk error 2"); res.send(err)})
 
   })
   .catch(err => {res.send(err)})
