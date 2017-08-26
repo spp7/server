@@ -47,6 +47,7 @@ const testGetUser = (req, res) => {
     let d = '90f866f0-0bb1-419f-bfcc-abd3ce65d0e1'
     let e = '1b6e44be-df70-4013-8a75-3d7abd2a8046'
     let f = '60766ed9-2480-4f47-ab3f-68a5a719b54d'
+    let g = token
     let j = a.toUpperCase()
     let k = encodeURI(b)
     let l = `${SHA256('')}`.toLowerCase()
@@ -55,15 +56,14 @@ const testGetUser = (req, res) => {
     let o = `${crypto.HmacSHA1(f, n)}`
 
     axios.defaults.headers.common["Authorization"] = `Bearer ${g}`
-    axios.defaults.headers.common["Content-Type"] = "application/json"
+    // axios.defaults.headers.common["Content-Type"] = "application/json"
     axios.defaults.headers.common["Origin"] = "182.16.165.75:3001"
     axios.defaults.headers.common["X-BCA-Key"] = e
     axios.defaults.headers.common["X-BCA-Timestamp"] = `${h}`
     axios.defaults.headers.common["X-BCA-Signature"] = o
 
-    let data = {}
 
-    axios.post(b, qs.stringify(data) )
+    axios.get(b)
     .then((result) => {console.log("ga error 2");res.send(result)})
     .catch(err => {console.log("masuk error 2"); res.send(err)})
 
