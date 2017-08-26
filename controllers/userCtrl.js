@@ -24,7 +24,7 @@ const testGetUser = (req, res) => {
     "Authorization": `Bearer ${g}`,
     "Content-Type": "application/json",
     "Origin": "182.16.165.75:3001",
-    "X-BCA-Key	": process.env.Business_API_Key,
+    "X-BCA-Key": process.env.Business_API_Key,
     "X-BCA-Timestamp": `${h}`,
     "X-BCA-Signature": stringtosign,
   }
