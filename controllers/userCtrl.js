@@ -61,11 +61,6 @@ const testGetUser = (req, res) => {
     axios.defaults.headers.common["X-BCA-Timestamp"] = `${h}`
     axios.defaults.headers.common["X-BCA-Signature"] = stringtosign
 
-    axios.post(b, qs.)
-    .then(result2 => {res.send(result2.data)})
-    .catch(err => {res.send(err)})
-
-
 
     // console.log(token)
     // let apisecret = process.env.Business_API_Secret
@@ -98,7 +93,7 @@ const testGetUser = (req, res) => {
     }
 
     // console.log(header)
-    axios.get(`${process.env.API_URL}${k}`, qs.stringify({}) )
+    axios.post(b, qs.stringify({}) )
     .then((signature) => {console.log("ga error 2");res.send(signature.data)})
     .catch(err => {console.log("masuk error 2"); res.send(err)})
 
