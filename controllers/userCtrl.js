@@ -8,39 +8,59 @@ const axios = require('axios')
 const User = require('../models/user')
 const userdata = require('../config/user')
 
+const generateToken = (req, res) => {
+  axios.post('https://api.finhacks.id/api/oauth/token',
+  {
+    "grant_type":"client_credentials"
+  },
+  {
+    headers: {
+      "Authorization": process.env.Business_OAuth_Credential,
+      "Content-Type": application/x-www-form-urlencoded
+    }
+  })
+  .then(res => res.send(res))
+  .catch(err => res.send({err:err}))
+}
 const testGetUser = (req, res) => {
-  let apisecret = process.env.Business_API_Secret
-  let k = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
-  let j = req.method
-  let l = ""
-  l = `${SHA256(l)}`.toLowerCase()
-  l = l
-  let g = process.env.Business_OAuth_Credential
-  let h = new Date().toISOString()
-  let stringtosign = `${j}:${k}:${g}:${l}:${h}`
-  stringtosign = `${crypto.HmacSHA1(apisecret,stringtosign)}`
+  generateToken(req, res)
 
-  // "Origin": "182.16.165.75:3001",
-  // "Content-Type": "application/json",
-  // let header = {
+
+  //
+  //
+  // let apisecret = process.env.Business_API_Secret
+  // let k = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
+  // let j = req.method
+  // let l = ""
+  // l = `${SHA256(l)}`.toLowerCase()
+  // l = l
+  // let g = process.env.Business_OAuth_Credential //=>access token
+  // let h = new Date().toISOString() //=>2016-02-03T10:00:00.000+07:00
+  // let stringtosign = `${j}:${k}:${g}:${l}:${h}`
+  // stringtosign = `${crypto.HmacSHA1(apisecret,stringtosign)}`
+  //
+  // // "Origin": "182.16.165.75:3001",
+  // // "Content-Type": "application/json",
+  // // let header = {
+  // //   "Authorization": `Bearer ${g}`,
+  // //   "X-BCA-Key": process.env.Business_API_Key,
+  // //   "X-BCA-Timestamp": `${h}`,
+  // //   "X-BCA-Signature": stringtosign,
+  // // }
+  //
+  // axios.defaults.headers.common = {
   //   "Authorization": `Bearer ${g}`,
+  //   "Content-Type": "application/json",
   //   "X-BCA-Key": process.env.Business_API_Key,
   //   "X-BCA-Timestamp": `${h}`,
   //   "X-BCA-Signature": stringtosign,
   // }
-
-  axios.defaults.headers.common = {
-    "Authorization": `Bearer ${g}`,
-    "Content-Type": "application/json",
-    "X-BCA-Key": process.env.Business_API_Key,
-    "X-BCA-Timestamp": `${h}`,
-    "X-BCA-Signature": stringtosign,
-  }
-
-  // console.log(header)
-  axios.get(`${process.env.API_URL}${k}`)
-  .then((result) => {console.log("ga error");res.send(result)})
-  .catch(err => {console.log("masuk error"); res.send(err)})
+  //
+  // // console.log(header)
+  // axios.get(`${process.env.API_URL}${k}`)
+  // .then((result) => {console.log("ga error");res.send(result)})
+  // .catch(err => {console.log("masuk error"); res.send(err)})
+  //
 }
 
 
