@@ -57,7 +57,7 @@ const testGetUser = (req, res) => {
     let m = `${new Date().toISOString().replace('Z','+07:00')}`
     let n = j+':'+k+':'+g+':'+l+':'+m
     //console.log(n)
-    let o = crypto.HmacSHA1(f, n).toString()
+    let o = crypto.HmacSHA256(f, n).toString()
     //console.log(o)
     //console.log('----xxx')
 
