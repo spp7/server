@@ -48,21 +48,32 @@ const testGetUser = (req, res) => {
     let e = '1b6e44be-df70-4013-8a75-3d7abd2a8046'
     let f = '60766ed9-2480-4f47-ab3f-68a5a719b54d'
     let g = token
+    let i = ''
+    let h = new Date().toISOString().replace('Z','+07:00')
     let j = a.toUpperCase()
     let k = encodeURI(b)
     let l = `${SHA256('')}`.toLowerCase()
     let m = new Date().toISOString().replace('Z','+07:00')
     let n = j+':'+k+':'+g+':'+l+':'+m
     console.log(n)
-    let o = `${crypto.HmacSHA1(f, n)}`
+    let o = crypto.HmacSHA1(f, n).toString()
+    console.log(o)
+    console.log('----xxx')
 
     axios.defaults.headers.common["Authorization"] = `Bearer ${g}`
+    console.log(axios.defaults.headers.common["Authorization"])
+    console.log('-----------1')
     // axios.defaults.headers.common["Content-Type"] = "application/json"
     axios.defaults.headers.common["Origin"] = "182.16.165.75:3001"
     axios.defaults.headers.common["X-BCA-Key"] = e
-    axios.defaults.headers.common["X-BCA-Timestamp"] = `${h}`
+    console.log(axios.defaults.headers.common["X-BCA-Key"])
+    console.log('-----------2')
+    axios.defaults.headers.common["X-BCA-Timestamp"] = h
+    console.log(axios.defaults.headers.common["X-BCA-Timestamp"])
+    console.log('-------------3')
     axios.defaults.headers.common["X-BCA-Signature"] = o
-
+    console.log(axios.defaults.headers.common["X-BCA-Signature"])
+    console.log('-------------4')
     let uri = `https://api.finhacks.id${b}`
     axios.get(uri)
     .then((result) => {console.log("ga error 2");res.send(result)})
