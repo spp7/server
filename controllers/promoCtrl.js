@@ -1,8 +1,6 @@
 require('mongoose')
 require('dotenv').config()
 
-const axios = require('axios')
-
 const Promo = require('../models/promo')
 const MyPromo = require('../models/myPromo')
 const User = require('../models/user')
