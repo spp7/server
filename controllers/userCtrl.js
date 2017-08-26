@@ -1,7 +1,7 @@
 require('mongoose')
 require('dotenv').config()
 const SHA256 = require("crypto-js/sha256")
-const HmacSHA1 = require('crypto-js/HmacSHA1')
+const crypto = require('crypto-js')
 
 const axios = require('axios')
 
@@ -18,7 +18,7 @@ const testGetUser = (req, res) => {
   let h = new Date().toISOString()
   let stringtosign = `${j}:${k}:${g}:${l}:${h}`
   console.log(stringtosign)
-  stringtosign = HmacSHA1(stringtosign)
+  stringtosign = crypto.HmacSHA1(stringtosign)
   console.log(stringtosign)
   axios.get(`${process.env.API_URL}${uri}`, {
     'Authorization': `Bearer ${g}`,
