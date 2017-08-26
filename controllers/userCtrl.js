@@ -55,29 +55,40 @@ const testGetUser = (req, res) => {
     let l = `${SHA256('')}`.toLowerCase()
     let m = new Date().toISOString().replace('Z','+07:00')
     let n = j+':'+k+':'+g+':'+l+':'+m
-    console.log(n)
+    //console.log(n)
     let o = crypto.HmacSHA1(f, n).toString()
-    console.log(o)
-    console.log('----xxx')
+    //console.log(o)
+    //console.log('----xxx')
 
     axios.defaults.headers.common["Authorization"] = `Bearer ${g}`
-    console.log(axios.defaults.headers.common["Authorization"])
-    console.log('-----------1')
+    //console.log(axios.defaults.headers.common["Authorization"])
+    //console.log('-----------1')
     // axios.defaults.headers.common["Content-Type"] = "application/json"
     axios.defaults.headers.common["Origin"] = "182.16.165.75:3001"
     axios.defaults.headers.common["X-BCA-Key"] = e
-    console.log(axios.defaults.headers.common["X-BCA-Key"])
-    console.log('-----------2')
+    //console.log(axios.defaults.headers.common["X-BCA-Key"])
+    //console.log('-----------2')
     axios.defaults.headers.common["X-BCA-Timestamp"] = h
-    console.log(axios.defaults.headers.common["X-BCA-Timestamp"])
-    console.log('-------------3')
+    //console.log(axios.defaults.headers.common["X-BCA-Timestamp"])
+    //console.log('-------------3')
     axios.defaults.headers.common["X-BCA-Signature"] = o
-    console.log(axios.defaults.headers.common["X-BCA-Signature"])
-    console.log('-------------4')
+    //console.log(axios.defaults.headers.common["X-BCA-Signature"])
+    //console.log('-------------4')
     let uri = `https://api.finhacks.id${b}`
-    console.log(uri)
-    console.log('---------------xx')
-    axios.get(uri, qs.stringify({}))
+    //console.log(uri)
+    //console.log('---------------xx')
+
+    var headers = {
+      "Authorization" : `Bearer ${g}`,
+      "Origin": "182.16.165.75:3001",
+      "X-BCA-Key": e,
+      "X-BCA-Timestamp": h,
+      "X-BCA-Signature": o
+    }
+
+    console.log(headers)
+    console.log(axios.defaults.headers.common)
+    axios.get(uri, qs.stringify({}), headers)
     .then((result) => {console.log("ga error 2");res.send(result)})
     .catch(err => {console.log("masuk error 2"); res.send(err)})
 
