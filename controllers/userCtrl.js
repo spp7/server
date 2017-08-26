@@ -31,7 +31,7 @@ const userdata = require('../config/user')
 
 const testGetUser = (req, res) => {
   let headers = {
-    "Authorization": `Basic ${process.env.Business_OAuth_Credential}`
+    "Authorization": `Basic ${process.env.Business_OAuth_Credential}`,
     "Content-Type": "application/x-www-form-urlencoded"
   }
   let datas = {
@@ -54,7 +54,7 @@ const testGetUser = (req, res) => {
       let h  = moment.tz(new Date(), TIMEZONE).format(DATE_FORMAT)
       let j = a.toUpperCase()
       let k = encodeURI(b)
-      let l = crypto.createHash('sha256').update(i).digest().toLowerCase()
+      let l = crypto.createHash('sha256').update(i).digest('hex').toLowerCase()
       //let l =  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       let m = h
       let o = crypto.createHmac('sha256', f).update('GET:' + k + ':' + g + ':' + l + ':' + h).digest('hex')
