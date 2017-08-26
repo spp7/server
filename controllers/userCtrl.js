@@ -49,11 +49,12 @@ const testGetUser = (req, res) => {
     let f = '60766ed9-2480-4f47-ab3f-68a5a719b54d'
     let g = token
     let i = ''
-    let h = new Date().toISOString().replace('Z','+07:00')
+    let h = `${new Date().toISOString().replace('Z','+07:00')}`
+    console.log(h)
     let j = a.toUpperCase()
     let k = encodeURI(b)
     let l = `${SHA256('')}`.toLowerCase()
-    let m = new Date().toISOString().replace('Z','+07:00')
+    let m = `${new Date().toISOString().replace('Z','+07:00')}`
     let n = j+':'+k+':'+g+':'+l+':'+m
     //console.log(n)
     let o = crypto.HmacSHA1(f, n).toString()
