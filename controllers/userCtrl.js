@@ -14,7 +14,8 @@ const testGetUser = (req, res) => {
   let j = req.method
   let l = ''
   // let l = req.body.replace(/\s/g, '') || ''
-  l = SHA256(l).toLowerCase()
+  l = SHA256(l)
+  l = l.toLowerCase()
   let g = process.env.Business_OAuth_Credential
   let h = new Date().toISOString()
   let stringtosign = `${j}:${k}:${g}:${l}:${h}`
