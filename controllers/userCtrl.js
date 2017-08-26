@@ -16,7 +16,7 @@ const generateToken = (req, res) => {
   {
     headers: {
       "Authorization": process.env.Business_OAuth_Credential,
-      "Content-Type": application/x-www-form-urlencoded
+      "Content-Type": 'application/x-www-form-urlencoded'
     }
   })
   .then(res => res.send(res))
