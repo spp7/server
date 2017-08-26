@@ -9,18 +9,17 @@ const User = require('../models/user')
 const userdata = require('../config/user')
 
 const generateToken = (req, res) => {
-  axios.post('https://api.finhacks.id/api/oauth/token',
-  {
+  console.log('generate token')
+  var headers = {
+    "Authorization": process.env.Business_OAuth_Credential,
+    "Content-Type": "application/x-www-form-urlencoded"
+  }
+  var data = {
     "grant_type":"client_credentials"
-  },
-  {
-    headers: {
-      "Authorization": process.env.Business_OAuth_Credential,
-      "Content-Type": 'application/x-www-form-urlencoded'
-    }
-  })
-  .then(res => res.send(res))
-  .catch(err => res.send({err:err}))
+  }
+  axios.post('https://api.finhacks.id/api/oauth/token', data, headers)
+  .then((res) => res.send(res))
+  .catch(err => res.send(err))
 }
 const testGetUser = (req, res) => {
   generateToken(req, res)
