@@ -1,6 +1,5 @@
 require('mongoose')
 const Game = require('../models/game')
-const util = require('../helpers/util')
 
 const createGame = (req, res) => {
   let game = new Game({ descr: req.body.descr })
