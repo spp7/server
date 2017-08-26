@@ -31,7 +31,7 @@ const testGetUser = (req, res) => {
   //   "X-BCA-Signature": stringtosign,
   // }
 
-  axios.defaults.headers = {
+  axios.defaults.headers.common = {
     "Authorization": `Bearer ${g}`,
     "X-BCA-Key": process.env.Business_API_Key,
     "X-BCA-Timestamp": `${h}`,
