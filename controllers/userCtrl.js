@@ -1,10 +1,15 @@
 var qs = require('qs');
 require('mongoose')
+var request = require('request');
 require('dotenv').config()
+var moment = require('moment-timezone')
 const SHA256 = require("crypto-js/sha256")
-const crypto = require('crypto-js')
-
+// const crypto = require('crypto-js')
+const crypto = require('crypto')
+const base64 = require('base-64')
 const axios = require('axios')
+const DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
+const TIMEZONE = 'Asia/Jakarta'
 
 const User = require('../models/user')
 const userdata = require('../config/user')
@@ -49,49 +54,58 @@ const testGetUser = (req, res) => {
     let f = '60766ed9-2480-4f47-ab3f-68a5a719b54d'
     let g = token
     let i = ''
-    let h = `${new Date().toISOString().replace('Z','+07:00')}`
-    console.log(h)
+    let h  = moment.tz(new Date(), TIMEZONE).format(DATE_FORMAT)
+    // let h = `${new Date().toISOString().replace('Z','+07:00')}`
+    // console.log(h)
     let j = a.toUpperCase()
     let k = encodeURI(b)
-    let l = `${SHA256('')}`.toLowerCase()
-    let m = `${new Date().toISOString().replace('Z','+07:00')}`
-    let n = j+':'+k+':'+g+':'+l+':'+m
+    let l = crypto.createHash('sha256').update(i).digest('hex').toLowerCase()
+    let m = moment.tz(new Date(), TIMEZONE).format(DATE_FORMAT)
+    // let n = j+':'+k+':'+g+':'+l+':'+m
     //console.log(n)
-    let o = crypto.HmacSHA256(f, n).toString()
-    //console.log(o)
-    //console.log('----xxx')
+    // let o = crypto.HmacSHA256(f, n).toString()
 
-    axios.defaults.headers.common["Authorization"] = `Bearer ${g}`
-    //console.log(axios.defaults.headers.common["Authorization"])
-    //console.log('-----------1')
-    // axios.defaults.headers.common["Content-Type"] = "application/json"
-    axios.defaults.headers.common["Origin"] = "182.16.165.75:3001"
-    axios.defaults.headers.common["X-BCA-Key"] = e
-    //console.log(axios.defaults.headers.common["X-BCA-Key"])
-    //console.log('-----------2')
-    axios.defaults.headers.common["X-BCA-Timestamp"] = h
-    //console.log(axios.defaults.headers.common["X-BCA-Timestamp"])
-    //console.log('-------------3')
-    axios.defaults.headers.common["X-BCA-Signature"] = o
-    //console.log(axios.defaults.headers.common["X-BCA-Signature"])
-    //console.log('-------------4')
-    let uri = `https://api.finhacks.id${b}`
-    //console.log(uri)
-    //console.log('---------------xx')
+    let o = crypto.createHmac('sha256', f).update('GET:' + k + ':' + g + ':' + l + ':' + h).digest('hex')
 
-    var headers = {
-      "Authorization" : `Bearer ${g}`,
-      "Origin": "182.16.165.75:3001",
-      "X-BCA-Key": e,
-      "X-BCA-Timestamp": h,
-      "X-BCA-Signature": o
-    }
+    var requestOptions = {
+        url: `${https://api.finhacks.id${b}}`,
+        method: 'GET',
+        headers: {
+            'X-BCA-KEY': e,
+            'Content-Type': 'application/json',
+            'X-BCA-TIMESTAMP': m,
+            'Authorization': 'Bearer ' + g,
+            'X-BCA-SIGNATURE': o
+        },
+        body: JSON.stringify({})
+    };
 
-    console.log(headers)
-    console.log(axios.defaults.headers.common)
-    axios.get(uri, qs.stringify({}), headers)
-    .then((result) => {console.log("ga error 2");res.send(result)})
-    .catch(err => {console.log("masuk error 2"); res.send(err)})
+    request(requestOptions, function (err, response, body) {
+      console.log(err)
+      console.log('----------------------------------x')
+      console.log(response)
+      console.log('----------------------------------x')
+      console.log(body)
+      console.log('----------------------------------x')
+    })
+
+    // axios.defaults.headers.common["Authorization"] = `Bearer ${g}`
+    // axios.defaults.headers.common["Origin"] = "182.16.165.75:3001"
+    // axios.defaults.headers.common["X-BCA-Key"] = e
+    // axios.defaults.headers.common["X-BCA-Timestamp"] = h
+    // axios.defaults.headers.common["X-BCA-Signature"] = o
+    // let uri = `https://api.finhacks.id${b}`
+    // var headers = {
+    //   "Authorization" : `Bearer ${g}`,
+    //   "Origin": "182.16.165.75:3001",
+    //   "X-BCA-Key": e,
+    //   "X-BCA-Timestamp": h,
+    //   "X-BCA-Signature": o
+    // }
+    //
+    // axios.get(uri, qs.stringify({}), headers)
+    // .then((result) => {console.log("ga error 2");res.send(result)})
+    // .catch(err => {console.log("masuk error 2"); res.send(err)})
 
   })
   .catch(err => {res.send(err)})
