@@ -52,9 +52,9 @@ const createUserPromo = (req, res) => {
           { 'detail.line': req.body.line },
           (err, user) => {
             if (err) res.send({err : err})
-            else if (user.currBalance < poinNeeded) res.send({err: `Insufficient Point. You need ${poinNeeded} but you only have ${user.currBalance}`})
+            else if (user.poin < poinNeeded) res.send({err: `Insufficient Point. You need ${poinNeeded} but you only have ${user.poin}`})
             else {
-              user.currBalance = user.currBalance - poinNeeded
+              user.poin = user.poin - poinNeeded
               user.save((err, nuser) => {
                 if (err) res.send({ err: err })
                 else {

@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 let TransferSchema = new Schema({
-  _user: { type: Schema.Type.ObjectId, ref: 'User' },
-  _promo: { type: Schema.Type.ObjectId, ref: 'Promo' },
+  // _user: { type: Schema.Type.ObjectId, ref: 'User' },
+  line: String,
   year: Number,
   month: Number,
   save: [{
