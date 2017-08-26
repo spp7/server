@@ -13,8 +13,7 @@ let game = require('./routes/game')
 let env = process.env.NODE_ENV || 'development'
 const port = process.env.PORT || 3001
 const db_config = {
-  'development' : 'mongodb://localhost/apiMenabung',
-  'test': 'mongodb://localhost/apiMenabung_tes',
+  'development' : 'mongodb://hacktivex:hacktivex@ds159953.mlab.com:59953/hacktivex',
   'production': ''
 }
 
