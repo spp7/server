@@ -20,10 +20,11 @@ const testGetUser = (req, res) => {
   let h = new Date().toISOString()
   let stringtosign = `${j}:${k}:${g}:${l}:${h}`
   stringtosign = `${crypto.HmacSHA1(apisecret,stringtosign)}`
+
+  // "Origin": "182.16.165.75:3001",
+  // "Content-Type": "application/json",
   let header = {
     "Authorization": `Bearer ${g}`,
-    "Content-Type": "application/json",
-    "Origin": "182.16.165.75:3001",
     "X-BCA-Key": process.env.Business_API_Key,
     "X-BCA-Timestamp": `${h}`,
     "X-BCA-Signature": stringtosign,
