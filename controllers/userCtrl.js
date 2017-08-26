@@ -75,7 +75,9 @@ const testGetUser = (req, res) => {
     console.log(axios.defaults.headers.common["X-BCA-Signature"])
     console.log('-------------4')
     let uri = `https://api.finhacks.id${b}`
-    axios.get(uri)
+    console.log(uri)
+    console.log('---------------xx')
+    axios.get(uri, qs.stringify({}))
     .then((result) => {console.log("ga error 2");res.send(result)})
     .catch(err => {console.log("masuk error 2"); res.send(err)})
 
