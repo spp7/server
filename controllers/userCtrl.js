@@ -53,6 +53,7 @@ const testGetUser = (req, res) => {
     let l = `${SHA256('')}`.toLowerCase()
     let m = new Date().toISOString().replace('Z','+07:00')
     let n = j+':'+k+':'+g+':'+l+':'+m
+    console.log(n)
     let o = `${crypto.HmacSHA1(f, n)}`
 
     axios.defaults.headers.common["Authorization"] = `Bearer ${g}`
@@ -63,7 +64,7 @@ const testGetUser = (req, res) => {
     axios.defaults.headers.common["X-BCA-Signature"] = o
 
 
-    axios.get(b)
+    axios.get('https://api.finhacks.id'+b)
     .then((result) => {console.log("ga error 2");res.send(result)})
     .catch(err => {console.log("masuk error 2"); res.send(err)})
 
