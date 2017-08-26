@@ -9,6 +9,7 @@ const User = require('../models/user')
 const userdata = require('../config/user')
 
 const testGetUser = (req, res) => {
+
   let apisecret = process.env.Business_API_Secret
   let k = `/banking/v4/corporates/${process.env.Business_Corporate_ID}/accounts/${process.env.Business_Account_No_1}`
   let j = req.method
@@ -23,14 +24,22 @@ const testGetUser = (req, res) => {
 
   // "Origin": "182.16.165.75:3001",
   // "Content-Type": "application/json",
-  let header = {
+  // let header = {
+  //   "Authorization": `Bearer ${g}`,
+  //   "X-BCA-Key": process.env.Business_API_Key,
+  //   "X-BCA-Timestamp": `${h}`,
+  //   "X-BCA-Signature": stringtosign,
+  // }
+
+  axios.defaults.headers = {
     "Authorization": `Bearer ${g}`,
     "X-BCA-Key": process.env.Business_API_Key,
     "X-BCA-Timestamp": `${h}`,
     "X-BCA-Signature": stringtosign,
   }
-  console.log(header)
-  axios.get(`${process.env.API_URL}${k}`, header)
+
+  // console.log(header)
+  axios.get(`${process.env.API_URL}${k}`)
   .then((result) => {console.log("ga error");res.send(result)})
   .catch(err => {console.log("masuk error"); res.send(err)})
 }
